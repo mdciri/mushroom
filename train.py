@@ -50,9 +50,9 @@ def train(args):
     patch_size = 32
     num_patches = h*w//(patch_size**2)
     num_layers = 12
-    num_heads = 12
+    num_heads = 3
     projection_dim = 768
-    mlp_head_units = [2048, 1024]
+    mlp_head_units = [1024, 512]
     transformer_units = [projection_dim*2, projection_dim]
     drop_rate = 0.2
 
