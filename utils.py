@@ -7,7 +7,16 @@ def img01(x):
     x_max = np.amax(x)
     return (x-x_min)/(x_max-x_min)
 
-def plotfig(x, fig_title):
+def get_hist(ds, num_classes):
+    coco = ds.coco
+    hist = np.zeros(num_classes)
+    for i in range(num_classes):
+        hist[i] = len(coco.getAnnIds(catIds=i))
+
+    return hist
+
+
+def plot_fig(x, fig_title):
 
     if torch.is_tensor(x):
         x = x.permute(1, 2, 0).numpy()

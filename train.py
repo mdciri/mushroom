@@ -180,11 +180,15 @@ if __name__ == "__main__":
     val_dl = DataLoader(val_ds, batch_size=batch_size, shuffle=False)
 
     # build model
+    num_classes = train_ds.num_classes
     model = vit_b_16(dropout=0.2, pretrained=pretrained)
-    model.heads.head = nn.Linear(in_features=768, out_features=train_ds.num_classes, bias=True)
+    model.heads.head = nn.Linear(in_features=768, out_features=num_classes, bias=True)
 
     # loss funciton
-    criterion = nn.CrossEntropyLoss()
+    class_weights = len(train_ds)/(num_classes * get_hist(train_ds))
+    criterion = nn.CrossEntropyLoss(
+        weight=torch.tensor(class_weights, dtype=torch.float32)
+        )
 
     # optimizer
     optimizer = optim.AdamW(
