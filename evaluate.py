@@ -48,7 +48,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser('ViT evaluation script for mushrooms image classification', add_help=False)
 
-    ## training parameters
+    ## evaluation parameters
     parser.add_argument('-tj', '--test_json', default="./annotations/test.json", type=str, help='test json file location')
     parser.add_argument('-g', '--gpu', default=0, type=int, help='GPU position')
     parser.add_argument('-is', '--image_shape', default=(224, 224), type=tuple, help='new image shape')
