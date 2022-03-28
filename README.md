@@ -1,7 +1,8 @@
 # Mushrooms image classification
 Mushroom image classification using [Vision Transformer](https://arxiv.org/abs/2010.11929). The implementation was done using pytorch version 1.11.0.
 
-The dataset is taken from [Fungi Classification FGVC5 competition](https://www.kaggle.com/c/fungi-challenge-fgvc-2018), workshop at CVPR 2018.
+The dataset is taken from [Fungi Classification FGVC5 competition](https://www.kaggle.com/c/fungi-challenge-fgvc-2018), workshop at CVPR 2018. The dataset describes 1394 different classes of mushrooms and it is split into training, validation, and test. Each of these datasets contains 85578, 4182, and 9758 images respectively.
+
 
 **Training**
 
@@ -25,6 +26,7 @@ where you can add these inputs:
 
 This script saves your model in the checkpoint path. Moreover, it saves the training and validation loss and accuray plot in the history.png file.
 
+
 **Evaluation**
 
 To evaluate the model type on terminal:
@@ -39,7 +41,9 @@ where you can add these inputs:
 
 This script calculates the accuracy of the input dataset using the pre-trained model saved in the checkpoint path.
 
+
 **Testing**
+
 To test the model type on terminal:
 
     python test.py 
