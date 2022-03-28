@@ -6,7 +6,7 @@ The dataset is taken from [Fungi Classification FGVC5 competition](https://www.k
 **Training**
 
 To train the model type on terminal:
-git 
+
     python train.py 
 
 where you can add these inputs:
