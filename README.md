@@ -1,5 +1,5 @@
-# Mushrooms image classification
-Mushroom image classification using [Vision Transformer](https://arxiv.org/abs/2010.11929). The implementation was done using pytorch version 1.11.0.
+# ViT for Mushrooms Image Classification
+Mushroom image classification using [Vision Transformer](https://arxiv.org/abs/2010.11929). The implementation was done using pytorch (version 1.11.0).
 
 The dataset is taken from [Fungi Classification FGVC5 competition](https://www.kaggle.com/c/fungi-challenge-fgvc-2018), workshop at CVPR 2018. The dataset describes 1394 different classes of mushrooms and it is split into training, validation, and test. Each of these datasets contains 85578, 4182, and 9758 images respectively.
 
