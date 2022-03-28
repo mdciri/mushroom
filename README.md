@@ -49,7 +49,7 @@ To test the model type on terminal:
     python test.py 
 
 where you can add these inputs:
-- "-tj" or "--val_json": train json file location (default: "./annotations/val.json")
+- `-tj` or "--val_json": train json file location (default: "./annotations/val.json")
 - "-cj", or "--classes_json": classes dictionary location (default "./classes_id_names.json")
 - "-g" or "--gpu": GPU position (default: 0)
 - "-is" or "--image_shape": new image shape (default: (224, 224))
