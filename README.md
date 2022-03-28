@@ -3,6 +3,8 @@ Mushroom image classification using [Vision Transformer](https://arxiv.org/abs/2
 
 The dataset is taken from [Fungi Classification FGVC5 competition](https://www.kaggle.com/c/fungi-challenge-fgvc-2018), workshop at CVPR 2018.
 
+**Training**
+
 To train the model type on terminal:
 git 
     python train.py 
@@ -21,14 +23,34 @@ where you can add these inputs:
 - "-cp" or "--checkpoint_path": checkpoint path (default: "./model/model.pt")
 - "-lm" or "--load_model": load pre-trained model from prevoius training (default: False)
 
-This script will save your model in the checkpoint path. Moreover, it saves the training and validation loss and accuray plot in the history.png file.
+This script saves your model in the checkpoint path. Moreover, it saves the training and validation loss and accuray plot in the history.png file.
 
-On the other hand, to evaluate the model type on terminal:
+**Evaluation**
+
+To evaluate the model type on terminal:
 
     python evaluate.py 
 
 where you can add these inputs:
-- "-tj" or "--train_json": train json file location (default: "./annotations/test.json")
+- "-vj" or "--val_json": train json file location (default: "./annotations/val.json")
 - "-g" or "--gpu": GPU position (default: 0)
 - "-is" or "--image_shape": new image shape (default: (224, 224))
 - "-cp" or "--checkpoint_path": checkpoint path (default: "./model/model.pt")
+
+This script calculates the accuracy of the input dataset using the pre-trained model saved in the checkpoint path.
+
+**Testing**
+To test the model type on terminal:
+
+    python test.py 
+
+where you can add these inputs:
+- "-tj" or "--val_json": train json file location (default: "./annotations/val.json")
+- "-cj", or "--classes_json": classes dictionary location (default "./classes_id_names.json")
+- "-g" or "--gpu": GPU position (default: 0)
+- "-is" or "--image_shape": new image shape (default: (224, 224))
+- "-cp" or "--checkpoint_path": checkpoint path (default: "./model/model.pt")
+
+This scripts returns a .csv file which contains 2 columns: *id* and *predicitons*.
+
+The *id* column contains the image IDs of the dataset, whereas *predicitons* the top 3 predictions of the model.
