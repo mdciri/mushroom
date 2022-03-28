@@ -133,7 +133,7 @@ if __name__ == "__main__":
     parser.add_argument('-g', '--gpu', default=0, type=int, help='GPU position')
     parser.add_argument('-is', '--image_shape', default=(224, 224), type=tuple, help='new image shape')
     parser.add_argument('-bs', '--batch_size', default=32, type=int, help='batch size')
-    parser.add_argument('-nw', '--num_workers', default=32, type=int, help='num workers') 
+    parser.add_argument('-nw', '--num_workers', default=2, type=int, help='num workers') 
     parser.add_argument('-p', '--pretrained', default=True, type=bool, help='load pretrained ViT')
     parser.add_argument('-lr', '--learning_rate', default=1e-3, type=float, help='learning rate')
     parser.add_argument('-wd', '--weight_decay', default=0.1, type=float, help='weight decay')

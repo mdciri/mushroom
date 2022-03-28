@@ -77,7 +77,7 @@ if __name__ == "__main__":
     print("... Model successfully loaded.")
 
     # evaluation
-    df = evaluate(test_ds, model, device)
+    df = test(test_ds, model, device)
     
     # save dataframe
     df.to_csv("test_predictions.csv")
