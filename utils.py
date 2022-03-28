@@ -15,7 +15,6 @@ def get_hist(ds, num_classes):
 
     return hist
 
-
 def plot_fig(x, fig_title):
 
     if torch.is_tensor(x):

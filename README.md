@@ -13,6 +13,7 @@ where you can add these inputs:
 - "-g" or "--gpu": GPU position (default: 0)
 - "-is" or "--image_shape": new image shape (default: (224, 224))
 - "-bs" or "--batch_size": batch size (default: 32)
+- "-nw" or "--num_workers": num workers (default: 2) 
 - "-p" or "--pretrained": load pretrained ViT (default=True) 
 - "-lr" or "--learning_rate": learning rate (default: 0.001)
 - "-wd" or "--weight_decay": weight decay (default: 0.1)

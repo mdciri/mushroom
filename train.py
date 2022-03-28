@@ -133,6 +133,7 @@ if __name__ == "__main__":
     parser.add_argument('-g', '--gpu', default=0, type=int, help='GPU position')
     parser.add_argument('-is', '--image_shape', default=(224, 224), type=tuple, help='new image shape')
     parser.add_argument('-bs', '--batch_size', default=32, type=int, help='batch size')
+    parser.add_argument('-nw', '--num_workers', default=32, type=int, help='num workers') 
     parser.add_argument('-p', '--pretrained', default=True, type=bool, help='load pretrained ViT')
     parser.add_argument('-lr', '--learning_rate', default=1e-3, type=float, help='learning rate')
     parser.add_argument('-wd', '--weight_decay', default=0.1, type=float, help='weight decay')
@@ -146,6 +147,7 @@ if __name__ == "__main__":
     gpu = args.gpu
     image_shape = args.image_shape
     batch_size = args.batch_size
+    num_workers = args.num_workers
     pretrained = args.pretrained
     learning_rate = args.learning_rate
     weight_decay = args.weight_decay
@@ -176,8 +178,8 @@ if __name__ == "__main__":
 
     train_ds = LoadCocoDataset(train_path, train_transforms)
     val_ds = LoadCocoDataset(val_path, val_transforms)
-    train_dl = DataLoader(train_ds, batch_size=batch_size, shuffle=True)
-    val_dl = DataLoader(val_ds, batch_size=batch_size, shuffle=False)
+    train_dl = DataLoader(train_ds, batch_size=batch_size, shuffle=True, num_workers=num_workers)
+    val_dl = DataLoader(val_ds, batch_size=batch_size, shuffle=False, num_workers=num_workers)
 
     # build model
     num_classes = train_ds.num_classes

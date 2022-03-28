@@ -1,4 +1,5 @@
 import argparse
+import json
 import tqdm
 
 import pandas as pd
@@ -8,47 +9,46 @@ import torchvision.transforms as T
 from torchvision.models import vit_b_16
 
 from augmentation import *
-from dataloader import LoadCocoDataset
-from utils import get_accuracy
+from dataloader import LoadCocoTestDataset
 
+def test(test_ds, model, device):
 
-def evaluate(val_ds, model, device):
-
-    trues = []
-    predictions = []
-
+    predictions = {
+        "id": [],
+        "predicted": []
+    }
+    
     model = model.to(device)
     model.eval()
     with torch.no_grad():
-        for x, y in tqdm.tqdm(val_ds, total=len(val_ds)):
+        for x, id in tqdm.tqdm(test_ds, total=len(test_ds)):
 
             x = torch.unsqueeze(x, dim=0)
             x = x.to(device)
             pred = model(x)
-            
-            y = torch.argmax(y, dim=1)
-            pred = torch.argmax(pred.softmax(dim=1), dim=1)
+            pred_top3 = torch.topk(pred, 3)
+            pred_top3 = pred_top3.indices.numpy()
 
-            trues.append(y)
-            predictions.append(pred)
+            predictions["id"].append(id)
+            predictions["predicted"].append(f"{pred_top3[0]} {pred_top3[1]} {pred_top3[2]}")
 
-    accuracy = (trues == predictions).type(torch.float).sum() / len(val_ds)
-
-    return accuracy
+    return pd.DataFrame(predictions)
 
 
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser('ViT evaluation script for mushrooms image classification', add_help=False)
 
-    ## evaluation parameters
-    parser.add_argument('-vj', '--val_json', default="./annotations/val.json", type=str, help='validation json file location')
+    ## testing parameters
+    parser.add_argument('-tj', '--test_json', default="./annotations/test.json", type=str, help='test json file location')
+    parser.add_argument('-cj', '--classes_json', default="./classes_id_names.json", type=str, help='classes dictionary')
     parser.add_argument('-g', '--gpu', default=0, type=int, help='GPU position')
     parser.add_argument('-is', '--image_shape', default=(224, 224), type=tuple, help='new image shape')
     parser.add_argument('-cp', '--checkpoint_path', default="./model/model.pt", type=str, help='checkpoint path')
 
     args = parser.parse_args()
-    val_path = args.val_json
+    test_path = args.test_json
+    classes_json = args.classes_json
     gpu = args.gpu
     image_shape = args.image_shape
     checkpoint_path = args.checkpoint_path
@@ -63,17 +63,21 @@ if __name__ == "__main__":
             T.ToTensor(),
             T.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
         ])
-    val_ds = LoadCocoDataset(val_path, transforms)
+    test_ds = LoadCocoTestDataset(test_path, transforms)
 
     # load model
+    class_dict = json.load(open(classes_json))
+    num_classes = len(class_dict)
+
     print("Loading pre-trained model ...")
     model = vit_b_16(dropout=0.2, pretrained=False)
-    model.heads.head = nn.Linear(in_features=768, out_features=val_ds.num_classes, bias=True)
+    model.heads.head = nn.Linear(in_features=768, out_features=num_classes, bias=True)
     checkpoint = torch.load(checkpoint_path)
     model.load_state_dict(checkpoint['model_state_dict'])
     print("... Model successfully loaded.")
 
     # evaluation
-    accuracy = evaluate(val_ds, model, device)
+    df = evaluate(test_ds, model, device)
     
-    print("Accuracy: {:.3f} %".format(accuracy*100))
+    # save dataframe
+    df.to_csv("test_predictions.csv")
