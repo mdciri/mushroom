@@ -1,33 +1,50 @@
-import tensorflow as tf
-from tensorflow.keras.layers import RandomFlip, RandomRotation, RandomZoom
+import numpy as np
+import torchvision.transforms.functional as TF
 
-class Augmentation(tf.keras.Model):
-    def __init__(self, flip_mode="horizontal_and_vertical", rotation_factor=0.2, scale_factor=0.2, brigth_factor=0.2):
-        super(Augmentation, self).__init__(name='Augmentation')
+class RandomAdjustGamma:
+    """ Random gamma power brightness transform
+    """
 
-        self.flip = RandomFlip(
-            mode=flip_mode
-        )
-        self.rotate = RandomRotation(
-            factor = rotation_factor, 
-            fill_mode='constant', 
-            fill_value = -1.
-        )
-        self.scale = RandomZoom(
-            factor = scale_factor, 
-            fill_mode='constant', 
-            fill_value = -1.
-        )
-        self.brigth_factor = brigth_factor
+    def __init__(self, gamma_range, p=0.5):
 
-    def call(self, x):
+        if isinstance(gamma_range, tuple):
+            self.a, self.b = gamma_range
+        if isinstance(gamma_range, float):
+            self.a, self.b = 1-gamma_range, 1+gamma_range
 
-        x = self.scale(self.rotate(self.flip(x)))
+        self.p = p
 
-        gamma = tf.random.uniform(shape=[], minval=1-self.brigth_factor, maxval=1+self.brigth_factor)
-        x = (x+1)/2 # x in range [0-1]
-        x = x**gamma
-        x = 2*x -1 # x in range [-1, 1]
+    def __call__(self, img):
 
-        return x
-        
+        random_gamma = (self.b - self.a) * np.random.random_sample() + self.a
+        if np.random.random_sample() <= self.p:
+            return TF.adjust_gamma(img, random_gamma)
+        else:
+            return img
+
+class RandomRotation():
+    """ Random rotation
+    """
+
+    def __init__(self, angle_range, p=0.5):
+
+        if isinstance(angle_range, tuple):
+            self.a, self.b = angle_range
+        if isinstance(angle_range, float) or isinstance(angle_range, int):
+            self.a, self.b = -1*angle_range, angle_range
+
+        self.p = p
+
+    def __call__(self, img):
+
+        random_angle = (self.b - self.a) * np.random.random_sample() + self.a
+
+        if np.random.random_sample() <= self.p:
+            return TF.rotate(
+                img,
+                angle = random_angle,
+                interpolation = TF.InterpolationMode.BILINEAR,
+                fill = 0,
+            )
+        else:
+            return img

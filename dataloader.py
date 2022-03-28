@@ -1,33 +1,60 @@
-import tensorflow as tf
-import json
+import torch
+import torch.nn.functional as F
+from PIL import Image
+from torch.utils.data import Dataset
+from torchvision.datasets import VisionDataset
+from pycocotools.coco import COCO
 
-def load_img(file_name):
-    X = tf.io.decode_jpeg(
-        tf.io.read_file(file_name),
-        channels = 3
-    )
+class LoadCocoDataset(VisionDataset):
+    """ Load Coco Dataset class using pycocotools.
+    Args:
+        annFile (string): Path to json annotation file.
+        transforms (callable, optional): A function/transform that  takes in an PIL image
+            and returns a transformed version. E.g, ``transforms.ToTensor``
+    """
 
-    return tf.cast(X, tf.float32)
+    def __init__(self, annFile, transforms=None, return_id=False):
+        super(LoadCocoDataset).__init__()
 
+        self.coco = COCO(annFile)
+        self.ids = list(sorted(self.coco.imgs.keys()))
+        self.transforms = transforms
+        self.num_classes = len(self.coco.cats.keys())
+        self.return_id = return_id
 
-def load_dataset(path):
-    json_file = json.load(open(path))
-    num_classes = len(json_file["categories"])
-    files, labels = [], []
+    def __len__(self):
+        return len(self.ids)
 
-    for img in json_file["images"]:
-        files.append(img["file_name"])
-        img_id = img["id"]
+    def _load_image(self, id):
+        path = self.coco.loadImgs(id)[0]["file_name"]
+        return Image.open(path).convert("RGB")
 
-        for anno in json_file["annotations"]:
-            if img_id == anno["image_id"]:
-                labels.append(anno["category_id"])
+    def _load_target(self, id):
+        return self.coco.loadAnns(self.coco.getAnnIds(imgIds=id))[0]["category_id"]
 
-    
-    ds1 = tf.data.Dataset.from_tensor_slices(files)
-    ds1 = ds1.map(lambda x: load_img(x))
+    def __getitem__(self, index):
+        id = self.ids[index]
+        image = self._load_image(id)
+        target = self._load_target(id)
 
-    ds2 = tf.data.Dataset.from_tensor_slices(labels)
-    ds2 = ds2.map(lambda x: tf.one_hot(x, num_classes))
+        if self.transforms is not None:
+            image = self.transforms(image)
 
-    return tf.data.Dataset.zip((ds1, ds2))
+        target = F.one_hot(
+            torch.tensor(target, dtype=torch.long),
+            self.num_classes
+            )
+        target = torch.tensor(target, dtype=torch.float32)
+
+        if self.return_id == False:
+            return image, target
+        else:
+            return id, image, target
+
+    def get_category_info(self, index):
+        id = self.ids[index]
+        target = self._load_target(id)
+        cat_name = self.coco.cats[target]["name"]
+        supercat_name = self.coco.cats[target]["supercategory"]
+
+        return cat_name, supercat_name
