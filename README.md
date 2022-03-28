@@ -4,6 +4,7 @@ Mushroom image classification with [Vision Transformer](https://arxiv.org/abs/20
 The dataset is taken from [Fungi Classification FGVC5 competition](https://www.kaggle.com/c/fungi-challenge-fgvc-2018), workshop at CVPR 2018.
 
 To train the model type on terminal:
+
     python train.py 
 
 where you can add these inputs:
@@ -22,6 +23,7 @@ where you can add these inputs:
 This script will save your model in the checkpoint path. Moreover, it saves the training and validation loss and accuray plot in the history.png file.
 
 On the other hand, to evaluate the model type on terminal:
+
     python evaluate.py 
 
 where you can add these inputs:
