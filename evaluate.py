@@ -42,9 +42,6 @@ def evaluate(test_ds, model, device):
     print("Accuracy: {:.4f}".format(running_accuracy/len(test_ds)))
 
     return pd.DataFrame(predictions)
-        
-        
-
 
 
 if __name__ == "__main__":
