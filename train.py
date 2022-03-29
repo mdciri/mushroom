@@ -156,6 +156,14 @@ if __name__ == "__main__":
     parser.add_argument("-cp", "--checkpoint_path", default="./model/model.pt", type=str, help="checkpoint path")
     parser.add_argument("-lm", "--load_model", default=False, type=bool, help="load pre-trained model from prevoius training")
 
+    # augmentation parameters
+    parser.add_argument("-phf", "--perc_horiz_filp", default=0.5, type=float, help="random horzontal flip percentage")
+    parser.add_argument("-pvf", "--perc_vert_filp", default=0.5, type=float, help="random vertical flip percentage")
+    parser.add_argument("-pr", "--perc_rotation", default=0.5, type=float, help="random rotation percentage")
+    parser.add_argument("-rr", "--rotation_range", default=60, type=int, help="rotation range")
+    parser.add_argument("-pb", "--perc_bright", default=0.5, type=float, help="random brightness percentage")
+    parser.add_argument("-gr", "--gamma_range", default=0.2, type=float, help="random brightness gamma range")
+
     ## model parameters
     parser.add_argument("-ps", "--patch_size", default=16, type=int, help="image patch size")
     parser.add_argument("-nl", "--num_layers", default=12, type=int, help="number of encoder layers")
@@ -174,10 +182,10 @@ if __name__ == "__main__":
     # loading data
     train_transforms =  T.Compose([
             T.Resize(args.image_shape),
-            T.RandomHorizontalFlip(0.5),
-            T.RandomVerticalFlip(p=0.5),
-            RandomAdjustGamma(0.2, p=0.5),
-            RandomRotation(60, p=50),
+            T.RandomHorizontalFlip(p=args.perc_horiz_filp),
+            T.RandomVerticalFlip(p=args.perc_vert_filp),
+            RandomAdjustGamma(args.gamma_range, p=args.perc_bright),
+            RandomRotation(args.rotation_range, p=args.perc_rotation),
             T.ToTensor(),
             T.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
         ])
