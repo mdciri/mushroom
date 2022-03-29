@@ -137,7 +137,7 @@ def train(
 
             torch.save(checkpoint, checkpoint_path)
 
-    return history
+    return checkpoint
 
 if __name__ == "__main__":
 
@@ -228,7 +228,7 @@ if __name__ == "__main__":
         weight_decay=args.weight_decay)
 
     # train
-    history = train(
+    checkpoint = train(
         train_dl, 
         val_dl, 
         model, 
@@ -239,4 +239,4 @@ if __name__ == "__main__":
         args.checkpoint_path,
         args.load_model)
 
-    plot_history(history)
+    plot_history(checkpoint["history"])
