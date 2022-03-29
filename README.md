@@ -1,7 +1,12 @@
-# ViT for Mushrooms Image Classification
-Mushroom image classification using [Vision Transformer](https://arxiv.org/abs/2010.11929). The implementation was done using pytorch (version 1.11.0).
+# Image Classification using ViT
 
-The dataset is taken from [Fungi Classification FGVC5 competition](https://www.kaggle.com/c/fungi-challenge-fgvc-2018), workshop at CVPR 2018. The dataset describes 1394 different classes of mushrooms and it is split into training, validation, and test. Each of these datasets contains 85578, 4182, and 9758 images respectively.
+Image classification using [Vision Transformer](https://arxiv.org/abs/2010.11929). The implementation was done using pytorch (version 1.11.0).
+
+The dataset used is the one from [Fungi Classification FGVC5 competition](https://www.kaggle.com/c/fungi-challenge-fgvc-2018), workshop at CVPR 2018. The dataset describes 1394 different classes of mushrooms and it is split into training, validation, and test. Each of these datasets contains 85578, 4182, and 9758 images respectively.
+
+This script read the annotation from `json` files using the [pycocotools](https://github.com/cocodataset/cocoapi/tree/master/PythonAPI/pycocotools) COCO class, which makes it really easy and simple. 
+
+In the end, it is really easy to use these codes for to train, evaluate, and test a ViT for a different image classification task. 
 
 
 **Training**
