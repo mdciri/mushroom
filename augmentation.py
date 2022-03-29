@@ -1,4 +1,5 @@
 import numpy as np
+import torch
 import torchvision.transforms as T
 import torchvision.transforms.functional as TF
 
@@ -16,12 +17,12 @@ def get_train_transforms(
     transforms =  T.Compose([
         T.Resize(image_shape),
         T.RandomApply(
-            T.Compose([
+            [
                 T.RandomHorizontalFlip(p=perc_horiz_filp),
                 T.RandomVerticalFlip(p=perc_vert_filp),
                 RandomAdjustGamma(gamma_range, p=perc_bright),
                 RandomRotation(rotation_range, p=perc_rotation),
-            ]), p = perc_augmentation),  
+            ], p = perc_augmentation),  
         T.ToTensor(),
         T.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
     ])
@@ -38,7 +39,7 @@ def get_test_val_transforms(image_shape):
 
     return transforms
 
-class RandomAdjustGamma:
+class RandomAdjustGamma():
     """ Random gamma power brightness transform
     """
 
