@@ -41,8 +41,8 @@ To evaluate the model type on terminal:
 
 where you can add these inputs:
 - `-vj` or `--val_json`: train json file location (default: `./annotations/val.json`)
-- `-g` or `--gpu`: GPU position (default: 0)
-- `-is` or `--image_shape`: new image shape (default: (224, 224))
+- `-g` or `--gpu`: GPU position (default: `0`)
+- `-is` or `--image_shape`: new image shape (default: `(224, 224)`)
 - `-cp` or `--checkpoint_path`: checkpoint path (default: `./model/model.pt`)
 
 This script calculates the accuracy of the input dataset using the pre-trained model saved in the checkpoint path. It breaks if `checkpoint_path` does not exist.
@@ -56,8 +56,8 @@ To test the model type on terminal:
 where you can add these inputs:
 - `-tj` or `--val_json`: train json file location (default: `./annotations/val.json`)
 - `-cj`, or `--classes_json`: classes dictionary location (default `./classes_id_names.json`)
-- `-g` or `--gpu`: GPU position (default: 0)
-- `-is` or `--image_shape`: new image shape (default: (224, 224))
+- `-g` or `--gpu`: GPU position (default: `0`)
+- `-is` or `--image_shape`: new image shape (default: `(224, 224)`)
 - `-cp` or `--checkpoint_path`: checkpoint path (default: `./model/model.pt`)
 
 This scripts returns a .csv file which contains 2 columns: *id* and *predicitons*.
