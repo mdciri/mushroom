@@ -6,7 +6,7 @@ The dataset used is the one from [Fungi Classification FGVC5 competition](https:
 
 This script read the annotation from `json` files using the [pycocotools](https://github.com/cocodataset/cocoapi/tree/master/PythonAPI/pycocotools) COCO class, which makes it really easy and simple. 
 
-In the end, it is really easy to use these codes for to train, evaluate, and test a ViT for a different image classification task. 
+In the end, these codes can be easly used to train, evaluate, and test a ViT for a different image classification task. 
 
 
 **Training**
