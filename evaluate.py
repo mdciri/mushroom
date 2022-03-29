@@ -6,7 +6,7 @@ import torch
 import torchvision.transforms as T
 from torchvision.models import VisionTransformer
 
-from augmentation import *
+from augmentation import get_test_val_transforms
 from dataloader import LoadCocoDataset
 
 def evaluate(val_ds, model, device):
@@ -43,24 +43,15 @@ if __name__ == "__main__":
     parser.add_argument('-g', '--gpu', default=0, type=int, help='GPU position')
     parser.add_argument('-is', '--image_shape', default=(224, 224), type=tuple, help='new image shape')
     parser.add_argument('-cp', '--checkpoint_path', default="./model/model.pt", type=str, help='checkpoint path')
-
     args = parser.parse_args()
-    val_path = args.val_json
-    gpu = args.gpu
-    image_shape = args.image_shape
-    checkpoint_path = args.checkpoint_path
     
     # gpu or cpu
     device = torch.device(f"cuda:{gpu}" if torch.cuda.is_available() else "cpu")
     print(f"Running on {device}.")
 
     # load data
-    transforms = T.Compose([
-            T.Resize(image_shape),
-            T.ToTensor(),
-            T.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
-        ])
-    val_ds = LoadCocoDataset(val_path, transforms)
+    transforms = get_test_val_transforms(args.image_shape)
+    val_ds = LoadCocoDataset(args.val_json, transforms)
 
     # load model
     assert os.path.exists(args.checkpoint_path)
@@ -80,7 +71,7 @@ if __name__ == "__main__":
     )
     model.load_state_dict(checkpoint["model_state_dict"])
     print("... Model successfully loaded.")
-    
+
     # evaluation
     accuracy = evaluate(val_ds, model, device)
     

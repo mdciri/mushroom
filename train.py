@@ -9,7 +9,7 @@ from torchvision.models import VisionTransformer
 import torch.optim as optim
 
 from utils import *
-from augmentation import *
+from augmentation import get_train_transforms, get_test_val_transforms
 from dataloader import LoadCocoDataset
 from torch.utils.data import DataLoader
 
@@ -157,6 +157,7 @@ if __name__ == "__main__":
     parser.add_argument("-lm", "--load_model", default=False, type=bool, help="load pre-trained model from prevoius training")
 
     # augmentation parameters
+    parser.add_argument("-pa", "--perc_augmentation", default=0.7, type=float, help="augmentation percentage")
     parser.add_argument("-phf", "--perc_horiz_filp", default=0.5, type=float, help="random horzontal flip percentage")
     parser.add_argument("-pvf", "--perc_vert_filp", default=0.5, type=float, help="random vertical flip percentage")
     parser.add_argument("-pr", "--perc_rotation", default=0.5, type=float, help="random rotation percentage")
@@ -180,21 +181,17 @@ if __name__ == "__main__":
     print(f"Running on {device}.")
 
     # loading data
-    train_transforms =  T.Compose([
-            T.Resize(args.image_shape),
-            T.RandomHorizontalFlip(p=args.perc_horiz_filp),
-            T.RandomVerticalFlip(p=args.perc_vert_filp),
-            RandomAdjustGamma(args.gamma_range, p=args.perc_bright),
-            RandomRotation(args.rotation_range, p=args.perc_rotation),
-            T.ToTensor(),
-            T.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
-        ])
-
-    val_transforms =  T.Compose([
-            T.Resize(args.image_shape),
-            T.ToTensor(),
-            T.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
-        ])
+    train_transforms =  get_train_transforms(
+        args.image_shape,
+        args.perc_augmentation,
+        args.perc_horiz_filp,
+        args.perc_vert_filp,
+        args.gamma_range,
+        args.perc_bright,
+        args.rotation_range,
+        args.perc_rotation
+    )
+    val_transforms =  get_test_val_transforms(args.image_shape)
 
     train_ds = LoadCocoDataset(args.train_json, train_transforms)
     val_ds = LoadCocoDataset(args.val_json, val_transforms)

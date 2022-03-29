@@ -31,6 +31,7 @@ where you can add these inputs:
     - `-lm` or `--load_model`: load pre-trained model from prevoius training (default: `False`)
 
 - Augmentation parameters:
+    - `-pa` or `--perc_augmentation`: augmentation percentage (default: `0.7`)
     - `-phf` or `--perc_horiz_filp`: random horzontal flip percentage (default: `0.5`)
     - `-pvf` or `--perc_vert_filp`: random vertical flip percentage (default: `0.5`)
     - `-pr` or `--perc_rotation`: random rotation percentage (default: `0.5`)
