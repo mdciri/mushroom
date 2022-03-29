@@ -29,9 +29,9 @@ where you can add these inputs:
     - `-phf` or `--perc_horiz_filp`: random horzontal flip percentage (default: `0.5`)
     - `-pvf` or `--perc_vert_filp`: random vertical flip percentage (default: `0.5`)
     - `-pr` or `--perc_rotation`: random rotation percentage (default: `0.5`)
-    - `-rr` or `--rotation_range`: random rotation range (default: `60`, so "(-60, 60)" degrees)
+    - `-rr` or `--rotation_range`: random rotation range (default: `60`, so `(-60, 60)` degrees)
     - `-pb` or `--perc_bright`: random brightness percentage (default: `0.5`)
-    - `-gr` or `--gamma_range`: random gamma range (default: `0.2`, so "[1-0.2, 1+0.2)")
+    - `-gr` or `--gamma_range`: random gamma range (default: `0.2`, so `[1-0.2, 1+0.2)`)
 
 - Model parameters:
     - `-ps` or `--patch_size`: image patch size (default: `16`)
