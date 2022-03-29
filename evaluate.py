@@ -1,16 +1,13 @@
 import argparse
+import os
 import tqdm
 
-import pandas as pd
 import torch
-import torch.nn as nn
 import torchvision.transforms as T
-from torchvision.models import vit_b_16
+from torchvision.models import VisionTransformer
 
 from augmentation import *
 from dataloader import LoadCocoDataset
-from utils import get_accuracy
-
 
 def evaluate(val_ds, model, device):
 
@@ -66,13 +63,24 @@ if __name__ == "__main__":
     val_ds = LoadCocoDataset(val_path, transforms)
 
     # load model
-    print("Loading pre-trained model ...")
-    model = vit_b_16(dropout=0.2, pretrained=False)
-    model.heads.head = nn.Linear(in_features=768, out_features=val_ds.num_classes, bias=True)
-    checkpoint = torch.load(checkpoint_path)
-    model.load_state_dict(checkpoint['model_state_dict'])
-    print("... Model successfully loaded.")
+    assert os.path.exists(args.checkpoint_path)
 
+    print("Loading pre-trained model ...")
+    checkpoint = torch.load(args.checkpoint_path)
+    model = VisionTransformer(
+        image_size = checkpoint["image_shape"],
+        patch_size = checkpoint["patch_size"],
+        num_layers = checkpoint["num_layers"],
+        num_heads = checkpoint["num_heads"],
+        hidden_dim = checkpoint["hidden_dim"],
+        mlp_dim = checkpoint["mlp_dim"],
+        dropout = checkpoint["dropout"],
+        attention_dropout = checkpoint["attention_dropout"],
+        num_classes = checkpoint["num_classes"],
+    )
+    model.load_state_dict(checkpoint["model_state_dict"])
+    print("... Model successfully loaded.")
+    
     # evaluation
     accuracy = evaluate(val_ds, model, device)
     

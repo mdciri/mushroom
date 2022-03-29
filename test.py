@@ -1,12 +1,12 @@
 import argparse
-import json
+import os
 import tqdm
 
 import pandas as pd
 import torch
 import torch.nn as nn
 import torchvision.transforms as T
-from torchvision.models import vit_b_16
+from torchvision.models import VisionTransformer
 
 from augmentation import *
 from dataloader import LoadCocoTestDataset
@@ -37,43 +37,46 @@ def test(test_ds, model, device):
 
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser('ViT evaluation script for mushrooms image classification', add_help=False)
+    parser = argparse.ArgumentParser("ViT evaluation script for mushrooms image classification", add_help=False)
 
     ## testing parameters
-    parser.add_argument('-tj', '--test_json', default="./annotations/test.json", type=str, help='test json file location')
-    parser.add_argument('-cj', '--classes_json', default="./classes_id_names.json", type=str, help='classes dictionary')
-    parser.add_argument('-g', '--gpu', default=0, type=int, help='GPU position')
-    parser.add_argument('-is', '--image_shape', default=(224, 224), type=tuple, help='new image shape')
-    parser.add_argument('-cp', '--checkpoint_path', default="./model/model.pt", type=str, help='checkpoint path')
+    parser.add_argument("-tj", "--test_json", default="./annotations/test.json", type=str, help="test json file location")
+    parser.add_argument("-cj", "--classes_json", default="./classes_id_names.json", type=str, help="classes dictionary")
+    parser.add_argument("-g", "--gpu", default=0, type=int, help="GPU position")
+    parser.add_argument("-is", "--image_shape", default=(224, 224), type=tuple, help="new image shape")
+    parser.add_argument("-cp", "--checkpoint_path", default="./model/model.pt", type=str, help="checkpoint path")
 
     args = parser.parse_args()
-    test_path = args.test_json
-    classes_json = args.classes_json
-    gpu = args.gpu
-    image_shape = args.image_shape
-    checkpoint_path = args.checkpoint_path
     
     # gpu or cpu
-    device = torch.device(f"cuda:{gpu}" if torch.cuda.is_available() else "cpu")
+    device = torch.device(f"cuda:{args.gpu}" if torch.cuda.is_available() else "cpu")
     print(f"Running on {device}.")
 
     # load data
     transforms = T.Compose([
-            T.Resize(image_shape),
+            T.Resize(args.image_shape),
             T.ToTensor(),
             T.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
         ])
-    test_ds = LoadCocoTestDataset(test_path, transforms)
+    test_ds = LoadCocoTestDataset(args.test_json, transforms)
 
     # load model
-    class_dict = json.load(open(classes_json))
-    num_classes = len(class_dict)
+    assert os.path.exists(args.checkpoint_path)
 
     print("Loading pre-trained model ...")
-    model = vit_b_16(dropout=0.2, pretrained=False)
-    model.heads.head = nn.Linear(in_features=768, out_features=num_classes, bias=True)
-    checkpoint = torch.load(checkpoint_path)
-    model.load_state_dict(checkpoint['model_state_dict'])
+    checkpoint = torch.load(args.checkpoint_path)
+    model = VisionTransformer(
+        image_size = checkpoint["image_shape"],
+        patch_size = checkpoint["patch_size"],
+        num_layers = checkpoint["num_layers"],
+        num_heads = checkpoint["num_heads"],
+        hidden_dim = checkpoint["hidden_dim"],
+        mlp_dim = checkpoint["mlp_dim"],
+        dropout = checkpoint["dropout"],
+        attention_dropout = checkpoint["attention_dropout"],
+        num_classes = checkpoint["num_classes"],
+    )
+    model.load_state_dict(checkpoint["model_state_dict"])
     print("... Model successfully loaded.")
 
     # evaluation

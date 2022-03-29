@@ -13,18 +13,24 @@ To train the model type on terminal:
 where you can add these inputs:
 - `-tj` or `--train_json`: train json file location (default: `./annotations/train.json`)
 - `-vj` or `--val_json`: val json file location (default: `./annotations/val.json`)
-- `-g` or `--gpu`: GPU position (default: 0)
-- `-is` or `--image_shape`: new image shape (default: (224, 224))
-- `-bs` or `--batch_size`: batch size (default: 32)
-- `-nw` or `--num_workers`: num workers (default: 2) 
-- `-p` or `--pretrained`: load pretrained ViT (default=True) 
-- `-lr` or `--learning_rate`: learning rate (default: 0.001)
-- `-wd` or `--weight_decay`: weight decay (default: 0.1)
-- `-ne` or `--num_epochs`: number of epochs (default: 100)
+- `-g` or `--gpu`: GPU position (default: `0`)
+- `-is` or `--image_shape`: new image shape (default: `(224, 224)`)
+- `-bs` or `--batch_size`: batch size (default: `32`)
+- `-nw` or `--num_workers`: num workers (default: `2`) 
+- `-lr` or `--learning_rate`: learning rate (default: `0.001`)
+- `-wd` or `--weight_decay`: weight decay (default: `0.1`)
+- `-ne` or `--num_epochs`: number of epochs (default: `100`)
 - `-cp` or `--checkpoint_path`: checkpoint path (default: `./model/model.pt`)
-- `-lm` or `--load_model`: load pre-trained model from prevoius training (default: False)
+- `-lm` or `--load_model`: load pre-trained model from prevoius training (default: `False`)
+- `-ps` or `--patch_size`: image patch size (default: `16`)
+- `-nl` or `--num_layers`: number of encoder layers (default: `12`)
+- `-nh` or `--num_heads`: number of heads for the MHA layer (default: `12`)
+- `-hd` or `--hidden_dim`: hidden dimension (default: `768`)
+- `-md` or `--mlp_dim`: mlp dimension (default: `3072`)
+- `-d` or `--dropout`: dropout rate (default: `0.2`)
+- `-da` or `--attention_dropout`: attention dropout rate (default: `0.2`)
 
-This script saves your model in the checkpoint path. Moreover, it saves the training and validation loss and accuray plot in the history.png file.
+This script saves your model in the checkpoint path with also its parameters. So, once you load it (`load_model` = `True`), you do not need to specify its parameters (i.e. evaulation and test phase). Moreover, it saves the training and validation loss and accuray plot in the `history.png` file.
 
 
 **Evaluation**
@@ -39,8 +45,7 @@ where you can add these inputs:
 - `-is` or `--image_shape`: new image shape (default: (224, 224))
 - `-cp` or `--checkpoint_path`: checkpoint path (default: `./model/model.pt`)
 
-This script calculates the accuracy of the input dataset using the pre-trained model saved in the checkpoint path.
-
+This script calculates the accuracy of the input dataset using the pre-trained model saved in the checkpoint path. It breaks if `checkpoint_path` does not exist.
 
 **Testing**
 
@@ -57,4 +62,4 @@ where you can add these inputs:
 
 This scripts returns a .csv file which contains 2 columns: *id* and *predicitons*.
 
-The *id* column contains the image IDs of the dataset, whereas *predicitons* the top 3 predictions of the model.
+The *id* column contains the image IDs of the dataset, whereas *predicitons* the top 3 predictions of the model. It breaks if `checkpoint_path` does not exist.
